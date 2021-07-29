@@ -17,12 +17,12 @@ var QueryType = graphql.NewObject(
 						Type: graphql.Int,
 					},
 				},
-				Resolve: resolvers.GetPictureById,
+				Resolve: resolvers.GetProductById,
 			},
 			"products": &graphql.Field{
 				Type:        graphql.NewList(productType),
 				Description: "Get product list",
-				Resolve:     resolvers.ListAllPictures,
+				Resolve:     resolvers.ListAllProducts,
 			},
 		},
 	})

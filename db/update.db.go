@@ -11,8 +11,8 @@ func UpdateProduct(aProduct products.Product) (products.Product, error) {
 	var sqlToBuild strings.Builder
 	var stringsToSep []string
 	var colToSep []string
-	var row *sql.Row
-	var tempProduct products.Product
+	var row *sql.Rows
+	var tempProduct []products.Product
 	var err error
 	sqlToBuild.WriteString(fmt.Sprintf(
 		`update products
@@ -42,12 +42,12 @@ func UpdateProduct(aProduct products.Product) (products.Product, error) {
 	sqlToBuild.WriteString(stringsToSep[len(stringsToSep)-1])
 	sqlToBuild.WriteString("\n")
 	sqlToBuild.WriteString(fmt.Sprintf("where id = %d;", aProduct.ID))
-	row = DB.QueryRow(sqlToBuild.String())
+	row, err = DB.Query(sqlToBuild.String())
 
-	tempProduct, err = ExtractProductFromRow(row)
+	tempProduct, err = ExtractProductsFromRows(row)
 
 	if err != nil {
 		return products.Product{}, err
 	}
-	return tempProduct, nil
+	return tempProduct[0], nil
 }

@@ -46,28 +46,48 @@ func CreateConn() error {
 	return nil
 }
 
-func ExtractProductFromRow(row *sql.Row) (products.Product, error) {
-	var tempProduct products.Product
-	var err error
-	err = row.Scan(&tempProduct.ID, &tempProduct.Name, &tempProduct.Desc, &tempProduct.Price, &tempProduct.TakenBy)
-	if err != nil {
-		return products.Product{}, err
-	}
-	return tempProduct, nil
-}
-
 func ExtractProductsFromRows(rows *sql.Rows) ([]products.Product, error) {
 	var tempProducts []products.Product
+	var colNames []string
+	var err error
+	colNames, err = rows.Columns()
+	if err != nil {
+		panic(err)
+	}
+
 	for rows.Next() {
 		var tempProduct products.Product
-		err := rows.Scan(&tempProduct.ID, &tempProduct.Name, &tempProduct.Desc, &tempProduct.Price, &tempProduct.TakenBy)
+		fmt.Println("Length", len(colNames))
+
+		cols := make([]interface{}, len(colNames))
+		for i := 0; i < len(colNames); i++ {
+			cols[i] = ProductCol(colNames[i], &tempProduct)
+		}
+		err := rows.Scan(cols...)
 		if err != nil {
 			return nil, err
 		}
 		tempProducts = append(tempProducts, tempProduct)
 	}
 	if rows.Err() != nil {
-		return nil, rows.Err()
+		panic(err)
 	}
 	return tempProducts, nil
+}
+
+func ProductCol(colname string, product *products.Product) interface{} {
+	switch colname {
+	case "id":
+		return &product.ID
+	case "picName":
+		return &product.Name
+	case "description":
+		return &product.Desc
+	case "price":
+		return &product.Price
+	case "takenBy":
+		return &product.TakenBy
+	default:
+		panic("Not impletmented")
+	}
 }

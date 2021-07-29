@@ -3,28 +3,28 @@ package resolvers
 import (
 	"errors"
 	"github.com/graphql-go/graphql"
+	"github.com/graphql-go/graphql/language/ast"
 	"graphql-go-pic-it/db"
 	"graphql-go-pic-it/products"
 )
 
-func GetPictureById(p graphql.ResolveParams) (interface{}, error) {
-
+func GetProductById(p graphql.ResolveParams) (interface{}, error) {
 	id, ok := p.Args["id"].(int)
 	if !ok {
-		return nil, errors.New("use list for all products")
+		return nil, errors.New("use products for all products")
 	}
-	result, err := db.GetProductById(id)
+	result, err := db.GetProductById(id, GetSelectedFields([]string{"product"}, p))
 	if err != nil {
 		return nil, err
 	}
 	return result, nil
 }
 
-func ListAllPictures(p graphql.ResolveParams) (interface{}, error) {
-	var products []products.Product
+func ListAllProducts(p graphql.ResolveParams) (interface{}, error) {
+	var products2 []products.Product
 	var err error
-	products, err = db.GetAllProducts()
-	return products, err
+	products2, err = db.GetAllProducts(GetSelectedFields([]string{"products"}, p))
+	return products2, err
 }
 
 func CreateProduct(p graphql.ResolveParams) (interface{}, error) {
@@ -78,4 +78,30 @@ func DeleteProduct(p graphql.ResolveParams) (interface{}, error) {
 	id, _ := p.Args["id"].(int)
 	_ = db.DeleteProduct(id)
 	return nil, nil
+}
+
+func GetSelectedFields(selectionPath []string, resolveParams graphql.ResolveParams) []string {
+	fields := resolveParams.Info.FieldASTs
+	for _, propName := range selectionPath {
+		found := false
+		for _, field := range fields {
+			if field.Name.Value == propName {
+				selections := field.SelectionSet.Selections
+				fields = make([]*ast.Field, 0)
+				for _, selection := range selections {
+					fields = append(fields, selection.(*ast.Field))
+				}
+				found = true
+				break
+			}
+		}
+		if !found {
+			return []string{}
+		}
+	}
+	var collect []string
+	for _, field := range fields {
+		collect = append(collect, field.Name.Value)
+	}
+	return collect
 }

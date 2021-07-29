@@ -7,7 +7,6 @@ import (
 
 func CreateTableProducts() (sql.Result, error) {
 	const query = `
-	drop table if exists products;
 	create table if not exists products 
 (
 	id int auto_increment,
@@ -19,7 +18,8 @@ func CreateTableProducts() (sql.Result, error) {
 		primary key (id)
 );
 `
-	res, err := DB.Exec(query)
+	res, err := DB.Exec("drop table if exists products;")
+	res, err = DB.Exec(query)
 	if err != nil {
 		return nil, err
 	} else {
