@@ -1,22 +1,22 @@
 package db
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
 	"graphql-go-pic-it/products"
 	"strings"
 )
 
-func UpdateProduct(aProduct products.Product) error {
+func UpdateProduct(aProduct products.Product) (products.Product, error) {
 	var sqlToBuild strings.Builder
+	var stringsToSep []string
+	var colToSep []string
+	var row *sql.Row
+	var tempProduct products.Product
+	var err error
 	sqlToBuild.WriteString(fmt.Sprintf(
 		`update products
 				set `))
-
-	var stringsToSep []string
-
-	var colToSep []string
-
 	if aProduct.Name != "" {
 		colToSep = append(colToSep, "picName")
 		stringsToSep = append(stringsToSep, fmt.Sprintf("\"picName\"='%s'", aProduct.Name))
@@ -34,18 +34,20 @@ func UpdateProduct(aProduct products.Product) error {
 		stringsToSep = append(stringsToSep, fmt.Sprintf("\"takenBy\"='%s'", aProduct.TakenBy))
 	}
 
-
 	for i, eachString := range stringsToSep {
-		if i < len(stringsToSep) - 1 {
+		if i < len(stringsToSep)-1 {
 			sqlToBuild.WriteString(eachString + ",")
 		}
 	}
-
-	sqlToBuild.WriteString(stringsToSep[len(stringsToSep) - 1])
-
+	sqlToBuild.WriteString(stringsToSep[len(stringsToSep)-1])
 	sqlToBuild.WriteString("\n")
 	sqlToBuild.WriteString(fmt.Sprintf("where id = %d;", aProduct.ID))
-	fmt.Println(sqlToBuild.String())
-	_, err := GlobalPoolConnection.Exec(context.Background(), sqlToBuild.String())
-	return err
+	row = DB.QueryRow(sqlToBuild.String())
+
+	tempProduct, err = ExtractProductFromRow(row)
+
+	if err != nil {
+		return products.Product{}, err
+	}
+	return tempProduct, nil
 }

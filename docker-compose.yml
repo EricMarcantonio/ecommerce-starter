@@ -1,24 +1,24 @@
 services:
   db:
-    sc
-    image: postgres
-    restart: unless-stopped
+    ports:
+    - '3306:3306'
+    image: mysql
     environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=admin
-      - POSTGRES_DB=db
-    ports:
-      - 5432:5432
+      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_USER: 'admin'
+      MYSQL_DATABASE: 'db'
+      MYSQL_PASSWORD: 'password'
   server:
-
-    restart: unless-stopped
+    depends_on:
+      - db
     ports:
-      - 8080:8080
+      - '8080:8080'
     build:
       context: .
       args:
-          USER: 'admin'
-          PASS: 'password'
-          HOST: 'db'
-          PORT: '5432'
-          DB: 'db'
+        USER: 'admin'
+        PASS: 'password'
+        HOST: 'db'
+        PORT: '3306'
+        DB: 'db'
+        TIMEOUT: '20'

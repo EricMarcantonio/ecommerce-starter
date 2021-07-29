@@ -17,7 +17,7 @@ func GetPictureById(p graphql.ResolveParams) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return result[0], nil
+	return result, nil
 }
 
 func ListAllPictures(p graphql.ResolveParams) (interface{}, error) {
@@ -34,7 +34,7 @@ func CreateProduct(p graphql.ResolveParams) (interface{}, error) {
 		Price:   p.Args["price"].(float64),
 		TakenBy: p.Args["takenBy"].(string),
 	}
-	err := db.CreateProduct(product)
+	product, err := db.CreateProduct(product)
 	if err != nil {
 		return nil, err
 	}
@@ -53,6 +53,7 @@ func UpdateProduct(p graphql.ResolveParams) (interface{}, error) {
 	}
 
 	tempProduct := products.Product{ID: id}
+	var res products.Product
 	if nameOk {
 		tempProduct.Name = name
 	}
@@ -66,16 +67,15 @@ func UpdateProduct(p graphql.ResolveParams) (interface{}, error) {
 		tempProduct.TakenBy = takenBy
 	}
 
-	err := db.UpdateProduct(tempProduct)
+	res, err := db.UpdateProduct(tempProduct)
 	if err != nil {
 		return nil, err
-	} else {
-		return tempProduct, nil
 	}
+	return res, nil
 }
 
 func DeleteProduct(p graphql.ResolveParams) (interface{}, error) {
 	id, _ := p.Args["id"].(int)
-	err := db.DeleteProduct(id)
-	return nil, err
+	_ = db.DeleteProduct(id)
+	return nil, nil
 }

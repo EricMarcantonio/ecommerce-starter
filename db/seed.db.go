@@ -1,23 +1,25 @@
 package db
 
 import (
-	"context"
-	"github.com/jackc/pgconn"
+	"database/sql"
 	"graphql-go-pic-it/products"
 )
 
-func CreateTableProducts() (pgconn.CommandTag, error) {
+func CreateTableProducts() (sql.Result, error) {
 	const query = `
-	create table products
-	(
-		id serial not null,
-		"picName" varchar(128) not null,
-		description varchar(512) not null,
-		price float not null,
-		"takenBy" varchar(64) not null,
+	drop table if exists products;
+	create table if not exists products 
+(
+	id int auto_increment,
+	picName varchar(128) not null,
+	description varchar(128) not null,
+	price float not null,
+	takenBy varchar(128) not null,
+	constraint products_pk
 		primary key (id)
-	);`
-	res, err := GlobalPoolConnection.Exec(context.Background(), query)
+);
+`
+	res, err := DB.Exec(query)
 	if err != nil {
 		return nil, err
 	} else {
@@ -25,23 +27,23 @@ func CreateTableProducts() (pgconn.CommandTag, error) {
 	}
 }
 
-func Seed()  {
-
-	_, err := CreateTableProducts()
+func Seed() error {
+	var err error
+	_, err = CreateTableProducts()
 	if err != nil {
-		return
+		return err
 	}
-
-	err = CreateProduct(products.Product{
-		Name:    "Eric",
-		Desc:    "Woop",
-		Price:   4,
+	_, err = CreateProduct(products.Product{
+		Name:    "Eric Marcantonio",
+		Desc:    "Picture of Eric Marcantonio",
+		Price:   8.99,
 		TakenBy: "MM",
 	})
-	if err != nil {
-		return
-	}
-
-
+	_, err = CreateProduct(products.Product{
+		Name:    "Michelle Mali",
+		Desc:    "Picture of Michelle Mali",
+		Price:   9.99,
+		TakenBy: "Emarc",
+	})
+	return err
 }
-

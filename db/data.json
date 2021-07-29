@@ -1,0 +1,16 @@
+{
+  "products": [
+    {
+      "name": "Eric Marcantonio" ,
+      "desc": "Picture of Eric",
+      "price": 8.99,
+      "taken": "MM"
+    },
+    {
+      "name": "Michelle Mali" ,
+      "desc": "Picture of Michelle",
+      "price": 9.99,
+      "taken": "Emarc"
+    }
+  ]
+}

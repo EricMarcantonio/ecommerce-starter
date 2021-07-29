@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/handler"
 	"graphql-go-pic-it/db"
@@ -17,8 +18,14 @@ var schema, _ = graphql.NewSchema(
 )
 
 func main() {
-	var err = db.CreatePoolConn()
-	db.Seed()
+	var err = db.CreateConn()
+	if err != nil {
+		panic("Error creating connection to DB")
+	}
+	err = db.Seed()
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	h := handler.New(&handler.Config{
 		Schema:     &schema,
