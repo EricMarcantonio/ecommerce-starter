@@ -1,0 +1,18 @@
+FROM golang
+
+WORKDIR /server
+
+ARG HOST
+ENV HOST=$HOST
+ARG PORT
+ENV PORT=$PORT
+ARG DB
+ENV DB=$DB
+ARG USER
+ENV USER=$USER
+ARG PASS
+ENV PASS=$PASS
+
+COPY . .
+CMD ["go", "run", "main.go"]
+

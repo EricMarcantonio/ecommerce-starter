@@ -1,0 +1,24 @@
+services:
+  db:
+    sc
+    image: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=db
+    ports:
+      - 5432:5432
+  server:
+
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    build:
+      context: .
+      args:
+          USER: 'admin'
+          PASS: 'password'
+          HOST: 'db'
+          PORT: '5432'
+          DB: 'db'
