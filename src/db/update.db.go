@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"graphql-go-pic-it/products"
+	"graphql-go-pic-it/src/products"
 	"strings"
 )
 
@@ -42,7 +42,7 @@ func UpdateProduct(aProduct products.Product) (products.Product, error) {
 	sqlToBuild.WriteString(stringsToSep[len(stringsToSep)-1])
 	sqlToBuild.WriteString("\n")
 	sqlToBuild.WriteString(fmt.Sprintf("where id = %d;", aProduct.ID))
-	row, err = DB.Query(sqlToBuild.String())
+	row, err = Query(sqlToBuild.String())
 
 	tempProduct, err = ExtractProductsFromRows(row)
 

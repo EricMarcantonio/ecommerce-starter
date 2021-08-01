@@ -1,0 +1,1 @@
+..\..\Desktop/k2tf.exe -f kubernetes.yaml -o kubernetes.terra.tf

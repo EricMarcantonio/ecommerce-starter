@@ -1,7 +1,8 @@
+#Simple and easy local testing of code without worrying about cloud deployment
+#Code should be modular enough to work irrigardless of cloud deployment and vice-versa
+version: '3'
 services:
   db:
-    ports:
-    - '3306:3306'
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: 'password'
@@ -9,12 +10,11 @@ services:
       MYSQL_DATABASE: 'db'
       MYSQL_PASSWORD: 'password'
   server:
-    depends_on:
-      - db
     ports:
-      - '8080:8080'
+      - '8000:8000'
     build:
       context: .
+      dockerfile: server_Dockerfile
       args:
         USER: 'admin'
         PASS: 'password'

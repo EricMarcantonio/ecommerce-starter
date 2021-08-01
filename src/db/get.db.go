@@ -3,8 +3,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"graphql-go-pic-it/products"
-	"log"
+	"graphql-go-pic-it/src/products"
 	"strings"
 )
 
@@ -13,8 +12,7 @@ func GetAllProducts(selectedFields []string) ([]products.Product, error) {
 	var res *sql.Rows
 	var err error
 
-	log.Println(fmt.Sprintf("select %s from products", BuildOptimizedSQL(selectedFields)))
-	res, err = DB.Query(fmt.Sprintf("select %s from products", BuildOptimizedSQL(selectedFields)))
+	res, err = Query(fmt.Sprintf("select %s from products", BuildOptimizedSQL(selectedFields)))
 
 	tempProducts, err = ExtractProductsFromRows(res)
 	if err != nil {
@@ -31,7 +29,7 @@ func GetProductById(id int, requestedFields []string) (products.Product, error) 
 	var res *sql.Rows
 	var err error
 
-	res, err = DB.Query(fmt.Sprintf("select %s from products where id=%d", BuildOptimizedSQL(requestedFields), id))
+	res, err = Query(fmt.Sprintf("select %s from products where id=%d", BuildOptimizedSQL(requestedFields), id))
 	tempProduct, err = ExtractProductsFromRows(res)
 	if err != nil {
 		return products.Product{}, err

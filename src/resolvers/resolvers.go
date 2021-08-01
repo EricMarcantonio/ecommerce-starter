@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql/language/ast"
-	"graphql-go-pic-it/db"
-	"graphql-go-pic-it/products"
+	db2 "graphql-go-pic-it/src/db"
+	"graphql-go-pic-it/src/products"
 )
 
 func GetProductById(p graphql.ResolveParams) (interface{}, error) {
@@ -13,7 +13,7 @@ func GetProductById(p graphql.ResolveParams) (interface{}, error) {
 	if !ok {
 		return nil, errors.New("use products for all products")
 	}
-	result, err := db.GetProductById(id, GetSelectedFields([]string{"product"}, p))
+	result, err := db2.GetProductById(id, GetSelectedFields([]string{"product"}, p))
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func GetProductById(p graphql.ResolveParams) (interface{}, error) {
 func ListAllProducts(p graphql.ResolveParams) (interface{}, error) {
 	var products2 []products.Product
 	var err error
-	products2, err = db.GetAllProducts(GetSelectedFields([]string{"products"}, p))
+	products2, err = db2.GetAllProducts(GetSelectedFields([]string{"products"}, p))
 	return products2, err
 }
 
@@ -34,7 +34,7 @@ func CreateProduct(p graphql.ResolveParams) (interface{}, error) {
 		Price:   p.Args["price"].(float64),
 		TakenBy: p.Args["takenBy"].(string),
 	}
-	product, err := db.CreateProduct(product)
+	product, err := db2.CreateProduct(product)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func UpdateProduct(p graphql.ResolveParams) (interface{}, error) {
 		tempProduct.TakenBy = takenBy
 	}
 
-	res, err := db.UpdateProduct(tempProduct)
+	res, err := db2.UpdateProduct(tempProduct)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func UpdateProduct(p graphql.ResolveParams) (interface{}, error) {
 
 func DeleteProduct(p graphql.ResolveParams) (interface{}, error) {
 	id, _ := p.Args["id"].(int)
-	_ = db.DeleteProduct(id)
+	_ = db2.DeleteProduct(id)
 	return nil, nil
 }
 

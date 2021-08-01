@@ -2,7 +2,7 @@ package types
 
 import (
 	"github.com/graphql-go/graphql"
-	"graphql-go-pic-it/resolvers"
+	"graphql-go-pic-it/src/resolvers"
 )
 
 var QueryType = graphql.NewObject(

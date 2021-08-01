@@ -7,6 +7,6 @@ import (
 
 func DeleteProduct(id int) *sql.Row {
 	var res *sql.Row
-	res = DB.QueryRow(fmt.Sprintf("delete from products where id=%d;", id))
+	res = QueryRow(fmt.Sprintf("delete from products where id=%d;", id))
 	return res
 }

@@ -2,7 +2,7 @@ package db
 
 import (
 	"database/sql"
-	"graphql-go-pic-it/products"
+	"graphql-go-pic-it/src/products"
 )
 
 func CreateTableProducts() (sql.Result, error) {
@@ -18,8 +18,8 @@ func CreateTableProducts() (sql.Result, error) {
 		primary key (id)
 );
 `
-	res, err := DB.Exec("drop table if exists products;")
-	res, err = DB.Exec(query)
+	res, err := Exec("drop table if exists products;")
+	res, err = Exec(query)
 	if err != nil {
 		return nil, err
 	} else {

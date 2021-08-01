@@ -7,4 +7,3 @@ type Product struct {
 	Price   float64 `json:"price"`
 	TakenBy string  `json:"taken_by"`
 }
-
