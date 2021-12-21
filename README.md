@@ -27,6 +27,3 @@ terraform your project
 Add tests with postman
 
 Add unit tests using go-test
-
-Consult gf for PM (hint: don't listen to her)
-
